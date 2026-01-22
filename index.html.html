@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulario Completo - Noticia IA China</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .news-context {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 0.95em;
+        }
+
+        .controls {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        select, button, input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .main-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 400px;
+        }
+
+        /* Flashcard Mode */
+        .flashcard-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .flashcard {
+            width: 100%;
+            max-width: 600px;
+            height: 350px;
+            perspective: 1000px;
+            cursor: pointer;
+            margin-bottom: 30px;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .chinese-text {
+            font-size: 4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .pinyin-text {
+            font-size: 1.8em;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .spanish-text {
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .card-hint {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .nav-btn-prev {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .nav-btn-next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Quiz Mode */
+        .quiz-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .quiz-chinese {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .quiz-pinyin {
+            font-size: 1.5em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .quiz-option {
+            padding: 20px;
+            border: 3px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+
+        .quiz-feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .quiz-feedback.correct {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        /* List Mode */
+        .word-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .word-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 20px;
+            align-items: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .word-item:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .word-chinese {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            min-width: 80px;
+        }
+
+        .word-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .word-pinyin {
+            font-size: 1.1em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .word-spanish {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .word-category {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .chinese-text {
+                font-size: 3em;
+            }
+            
+            .spanish-text {
+                font-size: 2em;
+            }
+
+            .word-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .word-category {
+                justify-self: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Vocabulario Noticia IA</h1>
+            <p class="subtitle">Aprende todas las palabras de: "中国发布新AI模型超越GPT-5"</p>
+            <div class="news-context">
+                <strong>Contexto:</strong> Noticia sobre el lanzamiento del modelo de IA Wenxin 5.0 de Baidu
+            </div>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalWords">0</div>
+                <div class="stat-label">Palabras Totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="studiedWords">0</div>
+                <div class="stat-label">Estudiadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="correctAnswers">0</div>
+                <div class="stat-label">Correctas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="accuracy">0%</div>
+                <div class="stat-label">Precisión</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-row">
+                <div class="control-group">
+                    <label for="modeSelect">Modo de estudio</label>
+                    <select id="modeSelect">
+                        <option value="flashcard">Flashcards</option>
+                        <option value="quiz">Quiz</option>
+                        <option value="list">Lista completa</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="categoryFilter">Filtrar por categoría</label>
+                    <select id="categoryFilter">
+                        <option value="all">Todas las categorías</option>
+                        <option value="básico">Básico</option>
+                        <option value="hsk5">HSK5</option>
+                        <option value="ia">Inteligencia Artificial</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-secondary" onclick="resetProgress()">Reiniciar progreso</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content" id="mainContent">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Complete vocabulary from the news article
+        const vocabulary = [
+            // Básico
+            { chinese: "中国", pinyin: "Zhōngguó", spanish: "China", category: "básico" },
+            { chinese: "发布", pinyin: "fābù", spanish: "lanzar, publicar", category: "básico" },
+            { chinese: "新", pinyin: "xīn", spanish: "nuevo", category: "básico" },
+            { chinese: "超越", pinyin: "chāoyuè", spanish: "superar, sobrepasar", category: "básico" },
+            { chinese: "北京", pinyin: "Běijīng", spanish: "Pekín", category: "básico" },
+            { chinese: "年", pinyin: "nián", spanish: "año", category: "básico" },
+            { chinese: "月", pinyin: "yuè", spanish: "mes", category: "básico" },
+            { chinese: "公司", pinyin: "gōngsī", spanish: "empresa, compañía", category: "básico" },
+            { chinese: "百度", pinyin: "Bǎidù", spanish: "Baidu (empresa)", category: "básico" },
+            { chinese: "今天", pinyin: "jīntiān", spanish: "hoy", category: "básico" },
+            { chinese: "宣布", pinyin: "xuānbù", spanish: "anunciar", category: "básico" },
+            { chinese: "推出", pinyin: "tuīchū", spanish: "lanzar (producto)", category: "básico" },
+            { chinese: "最", pinyin: "zuì", spanish: "más (superlativo)", category: "básico" },
+            { chinese: "先进", pinyin: "xiānjìn", spanish: "avanzado", category: "básico" },
+            { chinese: "文心", pinyin: "Wénxīn", spanish: "Wenxin (nombre del modelo)", category: "básico" },
+            { chinese: "这个", pinyin: "zhège", spanish: "este", category: "básico" },
+            { chinese: "在", pinyin: "zài", spanish: "en, estar en", category: "básico" },
+            { chinese: "方面", pinyin: "fāngmiàn", spanish: "aspecto", category: "básico" },
+            { chinese: "的", pinyin: "de", spanish: "partícula posesiva", category: "básico" },
+            { chinese: "了", pinyin: "le", spanish: "partícula de cambio", category: "básico" },
+            { chinese: "美国", pinyin: "Měiguó", spanish: "Estados Unidos", category: "básico" },
+            { chinese: "研究", pinyin: "yánjiū", spanish: "investigación, investigar", category: "básico" },
+            { chinese: "团队", pinyin: "tuánduì", spanish: "equipo", category: "básico" },
+            { chinese: "能", pinyin: "néng", spanish: "poder (capacidad)", category: "básico" },
+            { chinese: "更", pinyin: "gèng", spanish: "más (comparativo)", category: "básico" },
+            { chinese: "复杂", pinyin: "fùzá", spanish: "complejo", category: "básico" },
+            { chinese: "提供", pinyin: "tígōng", spanish: "proporcionar, ofrecer", category: "básico" },
+            { chinese: "准确", pinyin: "zhǔnquè", spanish: "preciso, exacto", category: "básico" },
+            { chinese: "包括", pinyin: "bāokuò", spanish: "incluir", category: "básico" },
+            { chinese: "好", pinyin: "hǎo", spanish: "bueno, mejor", category: "básico" },
+            { chinese: "中文", pinyin: "Zhōngwén", spanish: "chino (idioma)", category: "básico" },
+            { chinese: "低", pinyin: "dī", spanish: "bajo", category: "básico" },
+            { chinese: "认为", pinyin: "rènwéi", spanish: "considerar, creer", category: "básico" },
+            { chinese: "这", pinyin: "zhè", spanish: "este, esto", category: "básico" },
+            { chinese: "代表", pinyin: "dàibiǎo", spanish: "representar", category: "básico" },
+            { chinese: "重要", pinyin: "zhòngyào", spanish: "importante", category: "básico" },
+            { chinese: "官员", pinyin: "guānyuán", spanish: "funcionario", category: "básico" },
+            { chinese: "对", pinyin: "duì", spanish: "hacia, con respecto a", category: "básico" },
+            { chinese: "科技", pinyin: "kējì", spanish: "ciencia y tecnología", category: "básico" },
+            { chinese: "许多", pinyin: "xǔduō", spanish: "muchos", category: "básico" },
+            { chinese: "已经", pinyin: "yǐjīng", spanish: "ya", category: "básico" },
+            { chinese: "开始", pinyin: "kāishǐ", spanish: "comenzar", category: "básico" },
+            { chinese: "使用", pinyin: "shǐyòng", spanish: "usar, utilizar", category: "básico" },
+            { chinese: "系统", pinyin: "xìtǒng", spanish: "sistema", category: "básico" },
+            { chinese: "来", pinyin: "lái", spanish: "venir; para (propósito)", category: "básico" },
+            { chinese: "工作", pinyin: "gōngzuò", spanish: "trabajo", category: "básico" },
+            { chinese: "国际", pinyin: "guójì", spanish: "internacional", category: "básico" },
+            { chinese: "密切", pinyin: "mìqiè", spanish: "estrecho, cercano", category: "básico" },
+            { chinese: "这一", pinyin: "zhè yī", spanish: "este (enfático)", category: "básico" },
+            { chinese: "可能", pinyin: "kěnéng", spanish: "posible, poder", category: "básico" },
+            { chinese: "全球", pinyin: "quánqiú", spanish: "global, mundial", category: "básico" },
+            { chinese: "竞争", pinyin: "jìngzhēng", spanish: "competencia, competir", category: "básico" },
+
+            // HSK5
+            { chinese: "能力", pinyin: "nénglì", spanish: "capacidad, habilidad", category: "hsk5" },
+            { chinese: "表示", pinyin: "biǎoshì", spanish: "expresar, indicar", category: "hsk5" },
+            { chinese: "理解", pinyin: "lǐjiě", spanish: "comprender, entender", category: "hsk5" },
+            { chinese: "问题", pinyin: "wèntí", spanish: "problema, pregunta", category: "hsk5" },
+            { chinese: "答案", pinyin: "dá'àn", spanish: "respuesta", category: "hsk5" },
+            { chinese: "主要", pinyin: "zhǔyào", spanish: "principal, principalmente", category: "hsk5" },
+            { chinese: "语言", pinyin: "yǔyán", spanish: "idioma, lenguaje", category: "hsk5" },
+            { chinese: "速度", pinyin: "sùdù", spanish: "velocidad", category: "hsk5" },
+            { chinese: "成本", pinyin: "chéngběn", spanish: "costo", category: "hsk5" },
+            { chinese: "专家", pinyin: "zhuānjiā", spanish: "experto", category: "hsk5" },
+            { chinese: "技术", pinyin: "jìshù", spanish: "tecnología, técnica", category: "hsk5" },
+            { chinese: "进步", pinyin: "jìnbù", spanish: "progreso, avance", category: "hsk5" },
+            { chinese: "政府", pinyin: "zhèngfǔ", spanish: "gobierno", category: "hsk5" },
+            { chinese: "强调", pinyin: "qiángdiào", spanish: "enfatizar, destacar", category: "hsk5" },
+            { chinese: "成就", pinyin: "chéngjiù", spanish: "logro, éxito", category: "hsk5" },
+            { chinese: "重要性", pinyin: "zhòngyàoxìng", spanish: "importancia", category: "hsk5" },
+            { chinese: "发展", pinyin: "fāzhǎn", spanish: "desarrollo, desarrollar", category: "hsk5" },
+            { chinese: "企业", pinyin: "qǐyè", spanish: "empresa", category: "hsk5" },
+            { chinese: "提高", pinyin: "tígāo", spanish: "mejorar, elevar", category: "hsk5" },
+            { chinese: "效率", pinyin: "xiàolǜ", spanish: "eficiencia", category: "hsk5" },
+            { chinese: "社会", pinyin: "shèhuì", spanish: "sociedad", category: "hsk5" },
+            { chinese: "关注", pinyin: "guānzhù", spanish: "prestar atención, seguir", category: "hsk5" },
+            { chinese: "改变", pinyin: "gǎibiàn", spanish: "cambiar, modificar", category: "hsk5" },
+            { chinese: "情况", pinyin: "qíngkuàng", spanish: "situación, circunstancia", category: "hsk5" },
+
+            // Inteligencia Artificial
+            { chinese: "人工智能", pinyin: "réngōng zhìnéng", spanish: "inteligencia artificial", category: "ia" },
+            { chinese: "模型", pinyin: "móxíng", spanish: "modelo", category: "ia" },
+            { chinese: "自然语言处理", pinyin: "zìrán yǔyán chǔlǐ", spanish: "procesamiento del lenguaje natural", category: "ia" },
+            { chinese: "数据", pinyin: "shùjù", spanish: "datos", category: "ia" },
+            { chinese: "算法", pinyin: "suànfǎ", spanish: "algoritmo", category: "ia" },
+            { chinese: "机器学习", pinyin: "jīqì xuéxí", spanish: "aprendizaje automático", category: "ia" },
+            { chinese: "深度学习", pinyin: "shēndù xuéxí", spanish: "aprendizaje profundo", category: "ia" },
+            { chinese: "训练", pinyin: "xùnliàn", spanish: "entrenamiento, entrenar", category: "ia" },
+            { chinese: "神经网络", pinyin: "shénjīng wǎngluò", spanish: "red neuronal", category: "ia" },
+            { chinese: "智能系统", pinyin: "zhìnéng xìtǒng", spanish: "sistema inteligente", category: "ia" },
+            { chinese: "计算", pinyin: "jìsuàn", spanish: "cálculo, computación", category: "ia" },
+            { chinese: "处理器", pinyin: "chǔlǐqì", spanish: "procesador", category: "ia" },
+            { chinese: "应用", pinyin: "yìngyòng", spanish: "aplicación", category: "ia" },
+            { chinese: "创新", pinyin: "chuàngxīn", spanish: "innovación", category: "ia" },
+            { chinese: "开发", pinyin: "kāifā", spanish: "desarrollar, desarrollo", category: "ia" },
+            { chinese: "性能", pinyin: "xìngnéng", spanish: "rendimiento, desempeño", category: "ia" },
+            { chinese: "平台", pinyin: "píngtái", spanish: "plataforma", category: "ia" }
+        ];
+
+        // State management
+        let currentMode = 'flashcard';
+        let currentCategory = 'all';
+        let currentIndex = 0;
+        let studiedWords = new Set();
+        let quizAttempts = { correct: 0, total: 0 };
+        let isFlipped = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProgress();
+            updateStats();
+            document.getElementById('modeSelect').addEventListener('change', (e) => {
+                currentMode = e.target.value;
+                currentIndex = 0;
+                renderContent();
+            });
+            document.getElementById('categoryFilter').addEventListener('change', (e) => {
+                currentCategory = e.target.value;
+                currentIndex = 0;
+                renderContent();
+            });
+            renderContent();
+        });
+
+        // Get filtered words
+        function getFilteredWords() {
+            if (currentCategory === 'all') {
+                return vocabulary;
+            }
+            return vocabulary.filter(w => w.category === currentCategory);
+        }
+
+        // Update statistics
+        function updateStats() {
+            const filtered = getFilteredWords();
+            document.getElementById('totalWords').textContent = filtered.length;
+            document.getElementById('studiedWords').textContent = studiedWords.size;
+            document.getElementById('correctAnswers').textContent = quizAttempts.correct;
+            const accuracy = quizAttempts.total > 0 
+                ? Math.round((quizAttempts.correct / quizAttempts.total) * 100) 
+                : 0;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+        }
+
+        // Render content based on mode
+        function renderContent() {
+            const content = document.getElementById('mainContent');
+            content.innerHTML = '';
+            
+            if (currentMode === 'flashcard') {
+                renderFlashcard();
+            } else if (currentMode === 'quiz') {
+                renderQuiz();
+            } else if (currentMode === 'list') {
+                renderList();
+            }
+        }
+
+        // Flashcard mode
+        function renderFlashcard() {
+            const words = getFilteredWords();
+            if (words.length === 0) {
+                document.getElementById('mainContent').innerHTML = '<p style="text-align:center;padding:50px;">No hay palabras en esta categoría</p>';
+                return;
+            }
+
+            const word = words[currentIndex];
+            studiedWords.add(word.chinese);
+            saveProgress();
+            updateStats();
+
+            const html = `
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <div class="category-badge">${word.category.toUpperCase()}</div>
+                                <div class="chinese-text">${word.chinese}</div>
+                                <div class="pinyin-text">${word.pinyin}</div>
+                                <div class="card-hint">Haz clic para ver la traducción</div>
+                            </div>
+                            <div class="flashcard-back">
+                                <div class="category-badge">${word.category.toUpperCase()}</div>
+                                <div class="spanish-text">${word.spanish}</div>
+                                <div class="card-hint">Haz clic para volver</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="navigation-buttons">
+                        <button class="nav-btn nav-btn-prev" onclick="prevCard()" ${currentIndex === 0 ? 'disabled' : ''}>
+                            ← Anterior
+                        </button>
+                        <button class="nav-btn nav-btn-next" onclick="nextCard()" ${currentIndex === words.length - 1 ? 'disabled' : ''}>
+                            Siguiente →
+                        </button>
+                    </div>
+                    <div style="text-align:center;color:#666;">
+                        Tarjeta ${currentIndex + 1} de ${words.length}
+                    </div>
+                </div>
+            `;
+            document.getElementById('mainContent').innerHTML = html;
+        }
+
+        function flipCard() {
+            const card = document.getElementById('flashcard');
+            card.classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            const words = getFilteredWords();
+            if (currentIndex < words.length - 1) {
+                currentIndex++;
+                renderFlashcard();
+            }
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderFlashcard();
+            }
+        }
+
+        // Quiz mode
+        function renderQuiz() {
+            const words = getFilteredWords();
+            if (words.length < 4) {
+                document.getElementById('mainContent').innerHTML = '<p style="text-align:center;padding:50px;">Se necesitan al menos 4 palabras para el quiz</p>';
+                return;
+            }
+
+            const word = words[currentIndex];
+            studiedWords.add(word.chinese);
+            
+            // Generate options
+            const options = [word];
+            const otherWords = words.filter(w => w.chinese !== word.chinese);
+            while (options.length < 4 && otherWords.length >= options.length) {
+                const randomWord = otherWords[Math.floor(Math.random() * otherWords.length)];
+                if (!options.includes(randomWord)) {
+                    options.push(randomWord);
+                }
+            }
+            
+            // Shuffle options
+            options.sort(() => Math.random() - 0.5);
+
+            const html = `
+                <div class="quiz-container">
+                    <div class="quiz-question">
+                        <div class="quiz-chinese">${word.chinese}</div>
+                        <div class="quiz-pinyin">${word.pinyin}</div>
+                    </div>
+                    <div class="quiz-options">
+                        ${options.map((opt, i) => `
+                            <div class="quiz-option" onclick="checkAnswer('${opt.spanish}', '${word.spanish}', ${i})">
+                                ${opt.spanish}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div id="quizFeedback"></div>
+                    <div style="text-align:center;color:#666;">
+                        Pregunta ${currentIndex + 1} de ${words.length}
+                    </div>
+                </div>
+            `;
+            document.getElementById('mainContent').innerHTML = html;
+            updateStats();
+        }
+
+        function checkAnswer(selected, correct, optionIndex) {
+            const options = document.querySelectorAll('.quiz-option');
+            const feedback = document.getElementById('quizFeedback');
+            
+            quizAttempts.total++;
+            
+            if (selected === correct) {
+                quizAttempts.correct++;
+                options[optionIndex].classList.add('correct');
+                feedback.innerHTML = '<div class="quiz-feedback correct">¡Correcto! 🎉</div>';
+            } else {
+                options[optionIndex].classList.add('incorrect');
+                // Show correct answer
+                options.forEach(opt => {
+                    if (opt.textContent.trim() === correct) {
+                        opt.classList.add('correct');
+                    }
+                });
+                feedback.innerHTML = `<div class="quiz-feedback incorrect">Incorrecto. La respuesta correcta es: ${correct}</div>`;
+            }
+            
+            saveProgress();
+            updateStats();
+            
+            // Disable all options
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+            
+            // Next question button
+            setTimeout(() => {
+                const words = getFilteredWords();
+                if (currentIndex < words.length - 1) {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn';
+                    btn.textContent = 'Siguiente pregunta →';
+                    btn.onclick = () => {
+                        currentIndex++;
+                        renderQuiz();
+                    };
+                    feedback.appendChild(btn);
+                } else {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn';
+                    btn.textContent = 'Reiniciar Quiz';
+                    btn.onclick = () => {
+                        currentIndex = 0;
+                        renderQuiz();
+                    };
+                    feedback.appendChild(btn);
+                }
+            }, 1000);
+        }
+
+        // List mode
+        function renderList() {
+            const words = getFilteredWords();
+            
+            const html = `
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Buscar por chino, pinyin o español..." 
+                           onkeyup="filterList()">
+                </div>
+                <div class="word-list" id="wordList">
+                    ${words.map(word => `
+                        <div class="word-item">
+                            <div class="word-chinese">${word.chinese}</div>
+                            <div class="word-details">
+                                <div class="word-pinyin">${word.pinyin}</div>
+                                <div class="word-spanish">${word.spanish}</div>
+                            </div>
+                            <div class="word-category">${word.category.toUpperCase()}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            document.getElementById('mainContent').innerHTML = html;
+        }
+
+        function filterList() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const items = document.querySelectorAll('.word-item');
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        // Progress management
+        function saveProgress() {
+            const progress = {
+                studiedWords: Array.from(studiedWords),
+                quizAttempts: quizAttempts
+            };
+            localStorage.setItem('chineseVocabProgress', JSON.stringify(progress));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('chineseVocabProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                studiedWords = new Set(progress.studiedWords || []);
+                quizAttempts = progress.quizAttempts || { correct: 0, total: 0 };
+            }
+        }
+
+        function resetProgress() {
+            if (confirm('¿Estás segura de que quieres reiniciar todo el progreso?')) {
+                studiedWords.clear();
+                quizAttempts = { correct: 0, total: 0 };
+                currentIndex = 0;
+                localStorage.removeItem('chineseVocabProgress');
+                updateStats();
+                renderContent();
+            }
+        }
+    </script>
+</body>
+</html>
